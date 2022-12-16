@@ -13,41 +13,43 @@ import {
 const Barbers = () => {
   return (
     <ServicesContainer>
-      <ServicesH1>Our barbers</ServicesH1>
+      <ServicesH1>Our barber shops</ServicesH1>
       <ServicesWrapper>
         <ServicesCard>
           <ServicesIcon src={Icon1} />
-          <ServicesH2>Sebastian Zych</ServicesH2>
+          <ServicesH2>Zych shop</ServicesH2>
           <ServicesP>
-           Quick and swift with a blade.He makes perfect cuts for men.
+            A place for all football fans. If you want a cut like your favorite
+            football player, here is the best place to do it.
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon2} />
-          <ServicesH2>Jakub Świderek</ServicesH2>
+          <ServicesH2>Swiderek shop</ServicesH2>
           <ServicesP>
-            He has a good sense of fashion and sense of humour.You will not be bored with him.
+            Here our barbers have a good sense of humour and you will enjoy your
+            time here.
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon1} />
-          <ServicesH2>Nikodem Kirsz</ServicesH2>
+          <ServicesH2>Kirsz shop</ServicesH2>
           <ServicesP>
-            A very intelligent and expierienced hairstylist. You will be pleased with his work.
+            Here our barbers have excellent skills and have a "c sharp" eye to
+            make a perfect cut.
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon1} />
-          <ServicesH2>Andrzej Nang</ServicesH2>
-          <ServicesP>
-            A mix of western and eastern styles.
-          </ServicesP>
+          <ServicesH2>Nang shop</ServicesH2>
+          <ServicesP>A mix of western and eastern styles.</ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon1} />
-          <ServicesH2>Kacper Nowakowski</ServicesH2>
+          <ServicesH2>Nowakowski shop</ServicesH2>
           <ServicesP>
-            Our wisest and the most expierienced barber.
+            A calm place where you can relax and let our hairstylist do the
+            work.
           </ServicesP>
         </ServicesCard>
       </ServicesWrapper>
