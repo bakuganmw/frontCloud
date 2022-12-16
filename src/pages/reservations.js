@@ -5,7 +5,7 @@ const ReservationsPage = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     axios
-      .get("https://jsonplaceholder.typicode.com/posts")
+      .get("http://localhost:8080/services")
       .then((res) => {
         console.log(res);
         setPosts(res.data);
@@ -21,7 +21,7 @@ const ReservationsPage = () => {
       <div>
         <ul>
           {posts.map((post) => (
-            <li key={post.id}>{post.title}</li>
+            <li key={post.id}>{post.name}</li>
           ))}
         </ul>
       </div>

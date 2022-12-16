@@ -40,7 +40,6 @@ const infoSection = ({
                 <BtnWrap>
                   <ButtonLink
                     to="reservations"
-                    smooth={true}
                     duration={500}
                     exact="true"
                     offset={-80}
