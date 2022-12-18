@@ -1,59 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Icon1 from "../../images/barber.jpg";
 import Icon2 from "../../images/svg-2.jpg";
+import axios from "axios";
 import {
-  ServicesContainer,
-  ServicesH1,
-  ServicesCard,
-  ServicesH2,
-  ServicesIcon,
-  ServicesP,
-  ServicesWrapper,
+  BarbersContainer as BarbersShopContainer,
+  BarbersH1 as BarbersShopH1,
+  BarbersCard as BarbersShopCard,
+  BarbersH2 as BarbersShopH2,
+  BarbersIcon as BarbersShopIcon,
+  BarbersP as BarbersShopP,
+  BarbersWrapper as BarbersShopWrapper,
 } from "./BarbersElements";
 const Barbers = () => {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://insancescissorswebapp.azurewebsites.net/barbershops"
+        );
+        console.log(res);
+        setPosts(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
-    <ServicesContainer>
-      <ServicesH1>Our barber shops</ServicesH1>
-      <ServicesWrapper>
-        <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Zych shop</ServicesH2>
-          <ServicesP>
-            A place for all football fans. If you want a cut like your favorite
-            football player, here is the best place to do it.
-          </ServicesP>
-        </ServicesCard>
-        <ServicesCard>
-          <ServicesIcon src={Icon2} />
-          <ServicesH2>Swiderek shop</ServicesH2>
-          <ServicesP>
-            Here our barbers have a good sense of humour and you will enjoy your
-            time here.
-          </ServicesP>
-        </ServicesCard>
-        <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Kirsz shop</ServicesH2>
-          <ServicesP>
-            Here our barbers have excellent skills and have a "c sharp" eye to
-            make a perfect cut.
-          </ServicesP>
-        </ServicesCard>
-        <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Nang shop</ServicesH2>
-          <ServicesP>A mix of western and eastern styles.</ServicesP>
-        </ServicesCard>
-        <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Nowakowski shop</ServicesH2>
-          <ServicesP>
-            A calm place where you can relax and let our hairstylist do the
-            work.
-          </ServicesP>
-        </ServicesCard>
-      </ServicesWrapper>
-    </ServicesContainer>
+    <BarbersShopContainer>
+      <BarbersShopH1>Our barber shops</BarbersShopH1>
+      <BarbersShopWrapper>
+        <BarbersShopCard>
+          <BarbersShopIcon src={Icon1} />
+          <BarbersShopH2>{posts[0]?.name}</BarbersShopH2>
+          <BarbersShopP>{posts[0]?.description}</BarbersShopP>
+        </BarbersShopCard>
+        <BarbersShopCard>
+          <BarbersShopIcon src={Icon2} />
+          <BarbersShopH2>{posts[1]?.name}</BarbersShopH2>
+          <BarbersShopP>{posts[1]?.description}</BarbersShopP>
+        </BarbersShopCard>
+        <BarbersShopCard>
+          <BarbersShopIcon src={Icon1} />
+          <BarbersShopH2>{posts[2]?.name}</BarbersShopH2>
+          <BarbersShopP>{posts[2]?.description}</BarbersShopP>
+        </BarbersShopCard>
+        <BarbersShopCard>
+          <BarbersShopIcon src={Icon1} />
+          <BarbersShopH2>{posts[3]?.name}</BarbersShopH2>
+          <BarbersShopP>{posts[3]?.description}</BarbersShopP>
+        </BarbersShopCard>
+        <BarbersShopCard>
+          <BarbersShopIcon src={Icon1} />
+          <BarbersShopH2>{posts[4]?.name}</BarbersShopH2>
+          <BarbersShopP>{posts[4]?.description}</BarbersShopP>
+        </BarbersShopCard>
+      </BarbersShopWrapper>
+    </BarbersShopContainer>
   );
 };
 

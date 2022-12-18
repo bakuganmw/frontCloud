@@ -4,26 +4,30 @@ import axios from "axios";
 const ReservationsPage = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/services")
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "https://insancescissorswebapp.azurewebsites.net/barbershops"
+        );
         console.log(res);
         setPosts(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
     <>
       <div>ReservationsPage</div>
       <div>
-        <ul>
+        {/* <ul>
           {posts.map((post) => (
             <li key={post.id}>{post.name}</li>
           ))}
-        </ul>
+        </ul> */}
+        <p>{posts[0]?.name}</p>
       </div>
     </>
   );
