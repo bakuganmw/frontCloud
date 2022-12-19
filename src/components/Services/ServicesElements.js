@@ -10,7 +10,6 @@ export const ServicesContainer = styled.div`
   color: #fff;
   background: ${({ lightBg }) => (lightBg ? "#f9f9f9" : "#010606")};
 
-
   @media screen and (max-width: 768px) {
     height: 1100px;
   }
@@ -50,8 +49,8 @@ export const ServicesH1 = styled.h1`
 `;
 
 export const ServicesTable = styled.table`
-color: black;
-`
+  color: black;
+`;
 // export const BarbersCard = styled.div`
 //   background: #fff;
 //   display: flex;

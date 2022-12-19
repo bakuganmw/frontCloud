@@ -33,7 +33,7 @@ const Services = () => {
   });
   return (
     <>
-      <ServicesContainer lightBg="#f9f9f9" id='services'>
+      <ServicesContainer lightBg="#f9f9f9" id="services">
         <ServicesH1>Our services</ServicesH1>
         <ServicesWrapper>
           <select name="stylists" id="stylists">

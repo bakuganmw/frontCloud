@@ -27,6 +27,7 @@ const ReservationsPage = () => {
             <li key={post.id}>{post.name}</li>
           ))}
         </ul>
+        <p>{posts[0]?.name}</p>
       </div>
     </>
   );

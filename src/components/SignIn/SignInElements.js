@@ -70,36 +70,32 @@ export const Form = styled.form`
 `;
 
 export const FormLabel = styled.label`
-margin-bottom: 8px;
-font-size: 14px;
-color: white;
-
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: white;
 `;
 
 export const FormH1 = styled.h1`
-margin-bottom: 40px;
-color: white;
-font-size: 20px;
-font-weight: 400;
-text-align: center;
+  margin-bottom: 40px;
+  color: white;
+  font-size: 20px;
+  font-weight: 400;
+  text-align: center;
 `;
 
 export const FormInput = styled.input`
-padding: 16px 16px;
-margin-bottom: 32px;
-border: none;
-border-radius: 4px;
-
+  padding: 16px 16px;
+  margin-bottom: 32px;
+  border: none;
+  border-radius: 4px;
 `;
 
 export const FormButton = styled.button`
-background: #01bf71;
-padding: 16px 0;
-border: none;
-border-radius: 4px;
-color: white;
-font-size: 20px;
-cursor: pointer;
-
+  background: #01bf71;
+  padding: 16px 0;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
 `;
-
