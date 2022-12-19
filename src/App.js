@@ -9,7 +9,7 @@ function App() {
       <Routes>
       <Route path="/" element={<SignIn/>} exact/>
         <Route path="/Home" element={<Home/>} exact/>
-        <Route path="/reservations" element={<ReservationsPage/>} exact/>
+        <Route path="/Home/reservations" element={<ReservationsPage/>} exact/>
       </Routes>
     </Router>
   );
