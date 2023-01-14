@@ -12,7 +12,6 @@ const ReservationsPage = () => {
     <>
       <Sidebar isOpen={isOpen} toggle={toggle} />
       <ReservationNavbar toggle={toggle} />
-      <div>ReservationsPage</div>
       <ReservationForm/>
     </>
   );
