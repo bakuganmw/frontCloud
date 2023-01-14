@@ -7,7 +7,9 @@ import {
 } from "./ServicesElements";
 import axios from "axios";
 const Services = () => {
+  const [service, setService] = useState(0);
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -18,36 +20,49 @@ const Services = () => {
         setPosts(res.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
-  const arr = posts[0]?.services.map((service) => {
-    return (
-      <tr>
-        <td key={service.id}>{service.name}</td>
-        <td>{service.name}</td>
-        <td>{service.description}</td>
-      </tr>
-    );
-  });
+
   return (
     <>
       <ServicesContainer lightBg="#f9f9f9" id="services">
         <ServicesH1>Our services</ServicesH1>
         <ServicesWrapper>
-          <select name="stylists" id="stylists">
+          <select
+            name="stylists"
+            id="stylists"
+            value={service}
+            onChange={(e) => setService(e.target.value)}
+          >
+            <option>Choose a barbershop</option>
             {posts.map((post) => (
-              <option key={post.id}>{post.name}</option>
+              <option key={post.id} value={post.id}>
+                {post.name}
+              </option>
             ))}
           </select>
+          {loading && <div>loading</div>}
           <ServicesTable>
-            <tr>
-              <th>ID</th>
-              <th>name</th>
-              <th>description</th>
-            </tr>
-            {arr}
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>name</th>
+                <th>description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {posts[service - 1]?.services.map(({ id, name, description }) => (
+                <tr key={id}>
+                  <td>{id}</td>
+                  <td>{name}</td>
+                  <td>{description}</td>
+                </tr>
+              ))}
+            </tbody>
           </ServicesTable>
         </ServicesWrapper>
       </ServicesContainer>
