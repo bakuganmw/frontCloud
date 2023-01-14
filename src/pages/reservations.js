@@ -1,34 +1,19 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
+import React, { useState } from "react";
+import Sidebar from "../components/Sidebar/indeks";
+import ReservationNavbar from "../components/ReservationNavbar/indeks";
+import ReservationForm from "../components/ReservationForm/indeks";
 const ReservationsPage = () => {
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          "https://insancescissorswebapp.azurewebsites.net/barbershops"
-        );
-        console.log(res);
-        setPosts(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <>
+      <Sidebar isOpen={isOpen} toggle={toggle} />
+      <ReservationNavbar toggle={toggle} />
       <div>ReservationsPage</div>
-      <div>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id}>{post.name}</li>
-          ))}
-        </ul>
-        <p>{posts[0]?.name}</p>
-      </div>
+      <ReservationForm/>
     </>
   );
 };
