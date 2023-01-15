@@ -45,8 +45,8 @@ const ReservationForm = () => {
   const calculateClosestDate = () => {
     let i = 1;
     let closestDate = Date.now();
-  
-    while(true) {
+
+    while (true) {
       closestDate = todayPlus(i);
 
       if (!datesContain(takenDates, closestDate.getDate())) {
@@ -157,7 +157,7 @@ const ReservationForm = () => {
           {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
           {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
 
-          <FormButton type="submit">Send reservation</FormButton>
+          <FormButton type="submit" disabled={dateValid !== true}>Send reservation</FormButton>
 
         </Form>
       </FormWrap>

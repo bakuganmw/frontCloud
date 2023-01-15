@@ -90,13 +90,13 @@ export const FormInput = styled.input`
 `;
 
 export const FormButton = styled.button`
-  background: #01bf71;
+  background: ${({disabled}) => ( disabled ? "#77857e" : "#01bf71" )};
   padding: 16px 0;
   border: none;
   border-radius: 4px;
   color: white;
   font-size: 20px;
-  cursor: pointer;
+  cursor: ${({disabled}) => ( disabled ? "auto" : "pointer" )};;
 `;
 
 export const ContinueBox = styled.div`
