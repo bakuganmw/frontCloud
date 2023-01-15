@@ -17,6 +17,7 @@ export const Container = styled.div`
 `;
 
 export const FormWrap = styled.div`
+  background: #01bf71;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -100,7 +101,6 @@ export const FormButton = styled.button`
 `;
 
 export const ContinueBox = styled.div`
-  background: #010101;
   max-width: 400px;
   height: auto;
   width: 100%;
@@ -113,6 +113,7 @@ export const ContinueBox = styled.div`
 `;
 
 export const RouterButton = styled(LinkRouter)`
+  text-align: center;
   background: #01bf71;
   padding: 16px 0;
   border: none;

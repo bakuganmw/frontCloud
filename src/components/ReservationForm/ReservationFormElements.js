@@ -17,3 +17,7 @@ export const InputResponse = styled.p`
   font-size: smaller;
   margin: -25px 0px 40px 0px;
 `;
+
+export const ButtonResponse = styled.p`
+  color: green;
+`;

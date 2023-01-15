@@ -10,7 +10,7 @@ let loggedUser = null;
 
 const getUser = () => {
   if (!loggedUser) {
-    loggedUser = new User(1, "mail", false);
+    loggedUser = new User(2, "nikodemkirsz101@gmail.com", true);
   }
 
   return loggedUser;
