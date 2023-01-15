@@ -13,18 +13,26 @@ import { FormOption, FormSelect, InputResponse } from "./ReservationFormElements
 
 let barberId = 1;
 
-const isDateValid = (date, takenDates) => {
-  date = new Date(date).getDate();
+const datesContain = (dates, date) => {
+  let contain = false;
 
-  let free = true;
-  for (let takenDate of takenDates) {
+  for (let takenDate of dates) {
     takenDate = new Date(takenDate).getDate();
     if (date == takenDate) {
-      free = false;
+      contain = true;
     }
   }
 
-  return free;
+  return contain;
+}
+
+const dateToDayString = (date) => {
+  date = new Date(date)
+  return date.toISOString().split('T')[0];
+}
+
+const todayPlus = (days) => {
+  return (new Date(Date.now() + days * 86400000))
 }
 
 const ReservationForm = () => {
@@ -34,11 +42,27 @@ const ReservationForm = () => {
   const [takenDates, setTakenDates] = useState([]);
   const [dateValid, setDateValid] = useState(null);
 
+  const calculateClosestDate = () => {
+    let i = 1;
+    let closestDate = Date.now();
+  
+    while(true) {
+      closestDate = todayPlus(i);
+
+      if (!datesContain(takenDates, closestDate.getDate())) {
+        return closestDate;
+      }
+
+      i++;
+    }
+  }
+
   const validateDate = () => {
     let dateForm = document.getElementById("date");
-    const isFree = isDateValid(Date.parse(dateForm.value), takenDates);
+    let dateFormDate = new Date(Date.parse(dateForm.value))
+    const isFree = !datesContain(takenDates, dateFormDate.getDate());
 
-    console.log(isFree)
+    console.log(isFree);
     setDateValid(isFree);
   }
 
@@ -53,6 +77,11 @@ const ReservationForm = () => {
     } catch (error) {
       console.log(error);
     }
+
+    const dateForm = document.getElementById("date");
+    dateForm.value = dateToDayString(calculateClosestDate());
+
+    validateDate();
   };
 
   useEffect(() => {
@@ -124,7 +153,7 @@ const ReservationForm = () => {
           </FormSelect>
 
           <FormLabel htmlFor="date">Date</FormLabel>
-          <FormInput type="date" id="date" min={(new Date(Date.now() + 1 * 86400000)).toISOString().split('T')[0]} autoComplete="off" onChange={validateDate} required />
+          <FormInput type="date" id="date" min={dateToDayString(todayPlus(1))} autoComplete="off" onChange={validateDate} required />
           {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
           {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
 
