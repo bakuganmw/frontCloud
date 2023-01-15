@@ -6,3 +6,8 @@ export const FormSelect = styled.select`
   border: none;
   border-radius: 4px;
 `;
+
+export const FormOption = styled.option`
+  background: ${({ active }) => (active ? "green" : "white")};
+
+`
