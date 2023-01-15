@@ -9,12 +9,53 @@ import {
   FormWrap,
   Icon,
 } from "../SignIn/SignInElements";
-import { FormOption, FormSelect } from "./ReservationFormElements";
+import { FormOption, FormSelect, InputResponse } from "./ReservationFormElements";
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const isDateValid = (date, takenDates) => {
+  date = new Date(date).getDate();
+
+  let free = true;
+  for (let takenDate of takenDates) {
+    takenDate = new Date(takenDate).getDate();
+    if (date == takenDate) {
+      free = false;
+    }
+  }
+
+  return free;
+}
+
 const ReservationForm = () => {
-  const [street, setStreet] = useState(1);
+  const [barbershopId, setBarbershopId] = useState(1);
   const [posts, setPosts] = useState([]);
   const [distances] = useState([]);
   const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
+  const [takenDates, setTakenDates] = useState([]);
+  const [dateValid, setDateValid] = useState(null);
+
+  const validateDate = () => {
+    let dateForm = document.getElementById("date");
+    const isFree = isDateValid(Date.parse(dateForm.value), takenDates);
+
+    console.log(isFree)
+    setDateValid(isFree);
+  }
+
+  const getTakenDates = async () => {
+    await delay(1000);
+    try {
+      console.log("BaerbrId:", barbershopId);
+      const res = await axios.get(
+        `http://localhost:8080/reservations/significant-reservations-dates?barbershopId=${barbershopId}`
+      );
+      setTakenDates(res.data);
+      console.log("Taken Dates:", takenDates);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +70,7 @@ const ReservationForm = () => {
     };
     fetchData();
   }, []);
+
   function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -46,40 +88,50 @@ const ReservationForm = () => {
       console.log("error");
     }
   }
-
   getLocation();
   return (
     <div>
       <FormWrap>
         <Icon>Crazy Scissors</Icon>
         <Form>
+
           <FormH1>Reserve your visit</FormH1>
           <FormLabel htmlFor="name">Name</FormLabel>
           <FormInput type="text" id="name" autoComplete="off" required />
-          <FormLabel htmlFor="date">Date</FormLabel>
-          <FormInput type="date" id="date" autoComplete="off" required />
+
           <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
           <FormSelect
             name="barbershop"
             id="barbershop"
-            value={street}
-            onChange={(e) => setStreet(e.target.value)}
-          >
+            value={barbershopId}
+            onChange={(e) => {
+              console.log("Barbershop ON Change!")
+              setBarbershopId(e.target.value);
+              getTakenDates();
+            }}>
             {minDistance != Number.MAX_VALUE && posts.map((post) => (
               <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
                 {post.street}
               </FormOption>
             ))}
           </FormSelect>
+
           <FormLabel htmlFor="service">Service</FormLabel>
           <FormSelect name="service" id="service">
-            {posts[street - 1]?.services.map((post) => (
+            {posts[barbershopId - 1]?.services.map((post) => (
               <option key={post.id} value={post.id}>
                 {post.name}
               </option>
             ))}
           </FormSelect>
+
+          <FormLabel htmlFor="date">Date</FormLabel>
+          <FormInput type="date" id="date" min={(new Date(Date.now() + 1 * 86400000)).toISOString().split('T')[0]} autoComplete="off" onChange={validateDate} required />
+          {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
+          {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
+
           <FormButton type="submit">Send reservation</FormButton>
+
         </Form>
       </FormWrap>
     </div>

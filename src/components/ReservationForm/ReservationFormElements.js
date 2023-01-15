@@ -8,6 +8,12 @@ export const FormSelect = styled.select`
 `;
 
 export const FormOption = styled.option`
-  background: ${({ active }) => (active ? "green" : "white")};
+  color: ${({ active }) => (active ? "green" : "black")};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+`;
 
-`
+export const InputResponse = styled.p`
+  color: ${({ success }) => (success ? "green" : "red")};
+  font-size: smaller;
+  margin: -25px 0px 40px 0px;
+`;
