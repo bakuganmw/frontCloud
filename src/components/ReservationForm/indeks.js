@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
+  Container,
   Form,
   FormButton,
   FormH1,
@@ -8,11 +9,15 @@ import {
   FormLabel,
   FormWrap,
   Icon,
+  ContinueBox,
+  RouterButton,
 } from "../SignIn/SignInElements";
-import { FormOption, FormSelect, InputResponse } from "./ReservationFormElements";
+import { FormOption, FormSelect, InputResponse, ButtonResponse } from "./ReservationFormElements";
 import getUser from "../storage";
 
-let barberId = 1;
+let barberShopId = 1;
+let serviceId = 1;
+let takenDates = []
 
 const datesContain = (dates, date) => {
   let contain = false;
@@ -37,26 +42,30 @@ const todayPlus = (days) => {
 }
 
 const ReservationForm = () => {
+  const [posting, setPosting] = useState(false);
   const [posts, setPosts] = useState([]);
   const [distances] = useState([]);
   const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
-  const [takenDates, setTakenDates] = useState([]);
   const [dateValid, setDateValid] = useState(null);
+  const [success, setSuccess] = useState(null);
   const user = getUser();
 
   const calculateClosestDate = () => {
+    console.log(barberShopId, takenDates)
+    let closestDate;
+    
     let i = 1;
-    let closestDate = Date.now();
-
     while (true) {
       closestDate = todayPlus(i);
 
       if (!datesContain(takenDates, closestDate.getDate())) {
-        return closestDate;
+        break;
       }
 
       i++;
     }
+
+    return closestDate;
   }
 
   const validateDate = () => {
@@ -64,18 +73,15 @@ const ReservationForm = () => {
     let dateFormDate = new Date(Date.parse(dateForm.value))
     const isFree = !datesContain(takenDates, dateFormDate.getDate());
 
-    console.log(isFree);
     setDateValid(isFree);
   }
 
   const getTakenDates = async () => {
     try {
-      console.log("BarberId:", barberId);
       const res = await axios.get(
-        `https://insancescissorswebapp.azurewebsites.net/reservations/significant-reservations-dates?barbershopId=${barberId}`
+        `https://insancescissorswebapp.azurewebsites.net/reservations/significant-reservations-dates?barbershopId=${barberShopId}`
       );
-      setTakenDates(res.data);
-      console.log("Taken Dates:", takenDates);
+      takenDates = res.data;
     } catch (error) {
       console.log(error);
     }
@@ -86,8 +92,35 @@ const ReservationForm = () => {
     validateDate();
   };
 
-  const placeReservation = () => {
+  const placeReservation = async () => {
+    let dateForm = document.getElementById("date");
+    const date = dateForm.value;
+    const userId = user.id;
 
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/reservations/create",
+        {
+          day: date,
+          client_id: userId,
+          service_id: serviceId,
+          barbershop_id: barberShopId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        }
+      );
+      console.log(res.status);
+      console.log(res.data);
+
+      setSuccess(true);
+    } catch (error) {
+      console.log(error);
+      setSuccess(false);
+    }
   }
 
   useEffect(() => {
@@ -123,51 +156,60 @@ const ReservationForm = () => {
   }
   getLocation();
   return (
-    <div>
-      <FormWrap>
-        <Icon>Crazy Scissors</Icon>
-        <Form>
+    <>
+      {success ? (
+        <Container>
+          <ContinueBox>
+            <RouterButton to="/home">Succesfully placed reservation!</RouterButton>
+          </ContinueBox>
+        </Container>
+      ) : (
+        <div>
+          <FormWrap>
+            <Icon>Reservation</Icon>
+            <Form>
 
-          <FormH1>Reserve your visit</FormH1>
-          <FormLabel htmlFor="name">E-mail</FormLabel>
-          <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email != ""} required />
+              <FormH1>Reserve your visit</FormH1>
+              <FormLabel htmlFor="name">E-mail</FormLabel>
+              <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email != ""} required />
 
-          <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
-          <FormSelect
-            name="barbershop"
-            id="barbershop"
-            value={barberId}
-            onChange={(e) => {
-              console.log("Barbershop OnChange!")
-              barberId = e.target.value;
-              getTakenDates();
-            }}>
-            {minDistance !== Number.MAX_VALUE && posts.map((post) => (
-              <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
-                {post.name}
-              </FormOption>
-            ))}
-          </FormSelect>
+              <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
+              <FormSelect
+                name="barbershop"
+                id="barbershop"
+                value={barberShopId}
+                onChange={(e) => {
+                  barberShopId = e.target.value;
+                  getTakenDates();
+                }}>
+                {minDistance !== Number.MAX_VALUE && posts.map((post) => (
+                  <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
+                    {post.name}
+                  </FormOption>
+                ))}
+              </FormSelect>
 
-          <FormLabel htmlFor="service">Service</FormLabel>
-          <FormSelect name="service" id="service">
-            {posts[barberId - 1]?.services.map((post) => (
-              <option key={post.id} value={post.id}>
-                {post.name}
-              </option>
-            ))}
-          </FormSelect>
+              <FormLabel htmlFor="service">Service</FormLabel>
+              <FormSelect name="service" id="service">
+                {posts[barberShopId - 1]?.services.map((post) => (
+                  <option key={post.id} value={post.id} onChange={(e) => serviceId = e.target.value}>
+                    {post.name}
+                  </option>
+                ))}
+              </FormSelect>
 
-          <FormLabel htmlFor="date">Date</FormLabel>
-          <FormInput type="date" id="date" min={dateToDayString(todayPlus(1))} autoComplete="off" onChange={validateDate} required />
-          {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
-          {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
+              <FormLabel htmlFor="date">Date</FormLabel>
+              <FormInput type="date" id="date" min={dateToDayString(todayPlus(1))} autoComplete="off" onChange={validateDate} required />
+              {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
+              {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
 
-          <FormButton type="submit" disabled={dateValid !== true} onClick={placeReservation}>Send reservation</FormButton>
+              <FormButton type="button" disabled={dateValid !== true} onClick={placeReservation}>Place Reservation</FormButton>
+              {posting && <ButtonResponse>Placing reservation...</ButtonResponse>}
 
-        </Form>
-      </FormWrap>
-    </div>
+            </Form>
+          </FormWrap>
+        </div>)}
+    </>
   );
 };
 
