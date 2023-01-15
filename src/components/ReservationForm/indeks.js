@@ -17,7 +17,7 @@ import getUser from "../storage";
 
 let barberShopId = 1;
 let serviceId = 1;
-let takenDates = []
+let takenDatesCached = []
 
 const datesContain = (dates, date) => {
   let contain = false;
@@ -44,6 +44,7 @@ const todayPlus = (days) => {
 const ReservationForm = () => {
   const [posting, setPosting] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [takenDates, setTakenDates] = useState([]);
   const [distances] = useState([]);
   const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
   const [dateValid, setDateValid] = useState(null);
@@ -51,14 +52,14 @@ const ReservationForm = () => {
   const user = getUser();
 
   const calculateClosestDate = () => {
-    console.log(barberShopId, takenDates)
+    console.log(barberShopId, takenDatesCached)
     let closestDate;
     
     let i = 1;
     while (true) {
       closestDate = todayPlus(i);
 
-      if (!datesContain(takenDates, closestDate.getDate())) {
+      if (!datesContain(takenDatesCached, closestDate.getDate())) {
         break;
       }
 
@@ -71,7 +72,7 @@ const ReservationForm = () => {
   const validateDate = () => {
     let dateForm = document.getElementById("date");
     let dateFormDate = new Date(Date.parse(dateForm.value))
-    const isFree = !datesContain(takenDates, dateFormDate.getDate());
+    const isFree = !datesContain(takenDatesCached, dateFormDate.getDate());
 
     setDateValid(isFree);
   }
@@ -81,7 +82,8 @@ const ReservationForm = () => {
       const res = await axios.get(
         `https://insancescissorswebapp.azurewebsites.net/reservations/significant-reservations-dates?barbershopId=${barberShopId}`
       );
-      takenDates = res.data;
+      setTakenDates(res.data);
+      takenDatesCached = res.data;
     } catch (error) {
       console.log(error);
     }
@@ -98,8 +100,9 @@ const ReservationForm = () => {
     const userId = user.id;
 
     try {
+      setPosting(true);
       const res = await axios.post(
-        "http://localhost:8080/reservations/create",
+        "https://insancescissorswebapp.azurewebsites.net/reservations/create",
         {
           day: date,
           client_id: userId,
