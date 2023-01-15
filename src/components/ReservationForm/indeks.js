@@ -65,7 +65,7 @@ const ReservationForm = () => {
             value={street}
             onChange={(e) => setStreet(e.target.value)}
           >
-            {minDistance != Number.MAX_VALUE && posts.map((post) => (
+            {minDistance !== Number.MAX_VALUE && posts.map((post) => (
               <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
                 {post.street}
               </FormOption>

@@ -58,7 +58,7 @@ export const Form = styled.form`
   width: 100%;
   z-index: 1;
   display: grid;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 80px 32px;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
