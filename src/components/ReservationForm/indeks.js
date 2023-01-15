@@ -10,6 +10,7 @@ import {
   Icon,
 } from "../SignIn/SignInElements";
 import { FormOption, FormSelect, InputResponse } from "./ReservationFormElements";
+import getUser from "../storage";
 
 let barberId = 1;
 
@@ -27,12 +28,12 @@ const datesContain = (dates, date) => {
 }
 
 const dateToDayString = (date) => {
-  date = new Date(date)
+  date = new Date(date);
   return date.toISOString().split('T')[0];
 }
 
 const todayPlus = (days) => {
-  return (new Date(Date.now() + days * 86400000))
+  return (new Date(Date.now() + days * 86400000));
 }
 
 const ReservationForm = () => {
@@ -41,6 +42,7 @@ const ReservationForm = () => {
   const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
   const [takenDates, setTakenDates] = useState([]);
   const [dateValid, setDateValid] = useState(null);
+  const user = getUser();
 
   const calculateClosestDate = () => {
     let i = 1;
@@ -84,6 +86,10 @@ const ReservationForm = () => {
     validateDate();
   };
 
+  const placeReservation = () => {
+
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -123,8 +129,8 @@ const ReservationForm = () => {
         <Form>
 
           <FormH1>Reserve your visit</FormH1>
-          <FormLabel htmlFor="name">Name</FormLabel>
-          <FormInput type="text" id="name" autoComplete="off" required />
+          <FormLabel htmlFor="name">E-mail</FormLabel>
+          <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email != ""} required />
 
           <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
           <FormSelect
@@ -132,7 +138,7 @@ const ReservationForm = () => {
             id="barbershop"
             value={barberId}
             onChange={(e) => {
-              console.log("Barbershop ON Change!")
+              console.log("Barbershop OnChange!")
               barberId = e.target.value;
               getTakenDates();
             }}>
@@ -157,7 +163,7 @@ const ReservationForm = () => {
           {dateValid === true && <InputResponse success={true}>Wybrany termin jest wolny</InputResponse>}
           {dateValid === false && <InputResponse success={false}>Termin zajęty! Wybierz inny termin</InputResponse>}
 
-          <FormButton type="submit" disabled={dateValid !== true}>Send reservation</FormButton>
+          <FormButton type="submit" disabled={dateValid !== true} onClick={placeReservation}>Send reservation</FormButton>
 
         </Form>
       </FormWrap>
