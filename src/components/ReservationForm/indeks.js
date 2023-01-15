@@ -11,7 +11,7 @@ import {
 } from "../SignIn/SignInElements";
 import { FormOption, FormSelect, InputResponse } from "./ReservationFormElements";
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
+let barberId = 1;
 
 const isDateValid = (date, takenDates) => {
   date = new Date(date).getDate();
@@ -28,7 +28,6 @@ const isDateValid = (date, takenDates) => {
 }
 
 const ReservationForm = () => {
-  const [barbershopId, setBarbershopId] = useState(1);
   const [posts, setPosts] = useState([]);
   const [distances] = useState([]);
   const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
@@ -44,11 +43,10 @@ const ReservationForm = () => {
   }
 
   const getTakenDates = async () => {
-    await delay(1000);
     try {
-      console.log("BaerbrId:", barbershopId);
+      console.log("BarberId:", barberId);
       const res = await axios.get(
-        `http://localhost:8080/reservations/significant-reservations-dates?barbershopId=${barbershopId}`
+        `https://insancescissorswebapp.azurewebsites.net/reservations/significant-reservations-dates?barbershopId=${barberId}`
       );
       setTakenDates(res.data);
       console.log("Taken Dates:", takenDates);
@@ -103,22 +101,22 @@ const ReservationForm = () => {
           <FormSelect
             name="barbershop"
             id="barbershop"
-            value={barbershopId}
+            value={barberId}
             onChange={(e) => {
               console.log("Barbershop ON Change!")
-              setBarbershopId(e.target.value);
+              barberId = e.target.value;
               getTakenDates();
             }}>
             {minDistance != Number.MAX_VALUE && posts.map((post) => (
               <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
-                {post.street}
+                {post.name}
               </FormOption>
             ))}
           </FormSelect>
 
           <FormLabel htmlFor="service">Service</FormLabel>
           <FormSelect name="service" id="service">
-            {posts[barbershopId - 1]?.services.map((post) => (
+            {posts[barberId - 1]?.services.map((post) => (
               <option key={post.id} value={post.id}>
                 {post.name}
               </option>
