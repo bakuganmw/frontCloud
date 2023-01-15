@@ -11,6 +11,7 @@ import {
 } from "../SignIn/SignInElements";
 import { FormSelect } from "./ReservationFormElements";
 const ReservationForm = () => {
+  const [street, setStreet] = useState(1);
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -36,25 +37,21 @@ const ReservationForm = () => {
           <FormInput type="text" id="name" autoComplete="off" required />
           <FormLabel htmlFor="date">Date</FormLabel>
           <FormInput type="date" id="date" autoComplete="off" required />
-          {/* <FormLabel htmlFor="for">Password</FormLabel>
-              <FormInput type="password" required /> */}
           <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
-          <FormSelect name="barbershop" id="barbershop">
-            <option value={posts[0]?.street}>{posts[0]?.street}</option>
-            <option value={posts[1]?.street}>{posts[1]?.street}</option>
-            <option value={posts[2]?.street}>{posts[2]?.street}</option>
-            <option value={posts[3]?.street}>{posts[3]?.street}</option>
-            <option value={posts[4]?.street}>{posts[4]?.street}</option>
+          <FormSelect name="barbershop" id="barbershop" value={street}
+            onChange={(e) => setStreet(e.target.value)}>
+          {posts.map((post) => (
+              <option key={post.id} value={post.id}>
+                {post.street}
+              </option>
+            ))}
           </FormSelect>
           <FormLabel htmlFor="service">Service</FormLabel>
           <FormSelect name="service" id="service">
-            <option value={posts[0]?.services[0]?.name}>
-              {posts[0]?.services[0]?.name}
-            </option>
-            {/* <option value={posts[1]?.street}>{posts[1]?.street}</option>
-              <option value={posts[2]?.street}>{posts[2]?.street}</option>
-              <option value={posts[3]?.street}>{posts[3]?.street}</option>
-              <option value={posts[4]?.street}>{posts[4]?.street}</option> */}
+            {posts[street-1]?.services.map((post) => (
+                <option key={post.id} value={post.id}>{post.name}</option>
+              ))}
+           
           </FormSelect>
           <FormButton type="submit">Send reservation</FormButton>
         </Form>
