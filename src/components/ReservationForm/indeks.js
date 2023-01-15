@@ -13,7 +13,9 @@ import { FormOption, FormSelect } from "./ReservationFormElements";
 const ReservationForm = () => {
   const [street, setStreet] = useState(1);
   const [posts, setPosts] = useState([]);
-  const [distances,setDistances] = useState([]);
+  const [distances] = useState([]);
+  const [minDistance, setMinDistance] = useState(Number.MAX_VALUE);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,14 +32,15 @@ const ReservationForm = () => {
   function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const myLatidude = position.coords.latitude;
-        const myLongitude = position.coords.longitude;
-        for (let i=0; i<posts.length; i++) {
-          let y = myLatidude - posts[i]?.latitude;
-          let x = myLongitude - posts[i]?.longitude;
-          let distance = Math.sqrt(Math.pow(x,2) +Math.pow(y,2));
-          setDistances(distance.toFixed(2));
-      }
+        let minimalDistance = Number.MAX_VALUE;
+        for (let i = 0; i < posts.length; i++) {
+          let y = position.coords.latitude - posts[i]?.latitude;
+          let x = position.coords.longitude - posts[i]?.longitude;
+          let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+          distances[i] = distance;
+          minimalDistance = Math.min(distance, minimalDistance);
+        }
+        setMinDistance(minimalDistance);
       });
     } else {
       console.log("error");
@@ -62,8 +65,8 @@ const ReservationForm = () => {
             value={street}
             onChange={(e) => setStreet(e.target.value)}
           >
-            {posts.map((post) => (
-              <FormOption key={post.id} value={post.id} active = {distances[post.id-1] >= Math.max(distances) && "green"}>
+            {minDistance != Number.MAX_VALUE && posts.map((post) => (
+              <FormOption key={post.id} value={post.id} active={distances[post.id - 1] <= minDistance && "green"}>
                 {post.street}
               </FormOption>
             ))}
