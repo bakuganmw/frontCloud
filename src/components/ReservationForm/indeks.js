@@ -24,7 +24,7 @@ const datesContain = (dates, date) => {
 
   for (let takenDate of dates) {
     takenDate = new Date(takenDate).getDate();
-    if (date == takenDate) {
+    if (date === takenDate) {
       contain = true;
     }
   }
@@ -171,7 +171,6 @@ const ReservationForm = () => {
           <FormWrap>
             <Icon>Reservation</Icon>
             <Form>
-
               <FormH1>Reserve your visit</FormH1>
               <FormLabel htmlFor="name">E-mail</FormLabel>
               <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email != ""} required />
