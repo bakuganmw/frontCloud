@@ -1,39 +1,28 @@
 import axios from "axios";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import jwt_decode from "jwt-decode";
 // import AuthContext from "../AuthProvider";
 import {
   Container,
+  ContinueBox,
   Form,
   FormButton,
-  FormH1,
-  FormInput,
-  FormLabel,
   FormWrap,
   Icon,
-  ContinueBox,
   RouterButton,
 } from "./SignInElements";
 const SignIn = () => {
   // const { setAuth } = useContext(AuthContext);
-  // const userRef = useRef();
-  const errRef = useRef();
 
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState([]);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(document.getElementById("email").value);
-      const xd = document.getElementById("email").value;
       const res = await axios.get(
-        "https://insancescissorswebapp.azurewebsites.net/clients/emails/" + xd
+        "https://insancescissorswebapp.azurewebsites.net/barbershops"
       );
       console.log(res);
       setUser(res.data);
@@ -49,9 +38,27 @@ const SignIn = () => {
       } else {
         setErrMsg("Login Failed");
       }
-      errRef.current.focus();
     }
   };
+  function handleCallBackResponse(response) {
+    let varObject = jwt_decode(response.credential);
+    console.log(varObject);
+    setUser(varObject);
+  }
+  useEffect(() => {
+    /*global google*/
+    google.accounts.id.initialize({
+      client_id:
+        "351351467106-rdi7si3g9d0episle0oge9u2ue3fad00.apps.googleusercontent.com",
+      callback: handleCallBackResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("signIdDiv"), {
+      theme: "outline",
+      size: "large",
+      onclick: { handleSubmit },
+    });
+  }, []);
+
   return (
     <>
       {success ? (
@@ -63,23 +70,13 @@ const SignIn = () => {
       ) : (
         <Container>
           <FormWrap>
-            <Icon>Crazy Scissors</Icon>
-            <Form action="#" onSubmit={handleSubmit}>
-              <p
-                ref={errRef}
-                className={errMsg ? "errmsg" : "offscreen"}
-                aria-live="assertive"
-              >
-                {errMsg}
-              </p>
-              <FormH1>Sign in to your account</FormH1>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <FormInput type="email" id="email" autoComplete="off" required />
-              <FormLabel htmlFor="for">Password</FormLabel>
-              <FormInput type="password" required />
-              <FormButton type="submit">Confirm</FormButton>
-            </Form>
-          </FormWrap>
+          <Icon>Crazy Scissors</Icon>
+          <Form action="#" onSubmit={handleSubmit}>
+            <div id="signIdDiv"></div>
+            <FormButton type="submit">Confirm</FormButton>
+          </Form>
+          <RouterButton to="/home">Continue</RouterButton>
+        </FormWrap>
         </Container>
       )}
     </>
