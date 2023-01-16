@@ -43,7 +43,7 @@ const sessionUser = getUser();
       console.log(res);
       sessionUser.id = res.data.id;
       sessionUser.email = res.data.email;
-      sessionUser.isAdmin = res.data.isAdmin;
+      sessionUser.isAdmin = res.data.is_admin;
     } catch (err) {
       console.log(err);
     }
