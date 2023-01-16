@@ -173,7 +173,7 @@ const ReservationForm = () => {
             <Form>
               <FormH1>Reserve your visit</FormH1>
               <FormLabel htmlFor="name">E-mail</FormLabel>
-              <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email != ""} required />
+              <FormInput type="text" id="name" defaultValue={user.email} readOnly={user.email !== ""} required />
 
               <FormLabel htmlFor="barbershop">Barbershop</FormLabel>
               <FormSelect

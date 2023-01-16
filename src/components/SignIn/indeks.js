@@ -11,12 +11,11 @@ import {
   Icon,
   RouterButton,
 } from "./SignInElements";
+import getUser from "../storage";
 const SignIn = () => {
   // const { setAuth } = useContext(AuthContext);
-
+const sessionUser = getUser();
   const [user, setUser] = useState([]);
-
-  const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,21 +28,25 @@ const SignIn = () => {
       setSuccess(true);
     } catch (err) {
       console.log(err);
-      if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
-      } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg("Login Failed");
-      }
     }
   };
-  function handleCallBackResponse(response) {
+  async function handleCallBackResponse(response) {
     let varObject = jwt_decode(response.credential);
     console.log(varObject);
     setUser(varObject);
+    const {email} = varObject;
+    
+    try {
+      const res = await axios.get(
+        `https://insancescissorswebapp.azurewebsites.net/clients/emails/${email}`
+      );
+      console.log(res);
+      sessionUser.id = res.data.id;
+      sessionUser.email = res.data.email;
+      sessionUser.isAdmin = res.data.isAdmin;
+    } catch (err) {
+      console.log(err);
+    }
   }
   useEffect(() => {
     /*global google*/
@@ -55,9 +58,8 @@ const SignIn = () => {
     google.accounts.id.renderButton(document.getElementById("signIdDiv"), {
       theme: "outline",
       size: "large",
-      onclick: { handleSubmit },
     });
-  }, []);
+  },);
 
   return (
     <>
@@ -75,7 +77,6 @@ const SignIn = () => {
             <div id="signIdDiv"></div>
             <FormButton type="submit">Confirm</FormButton>
           </Form>
-          <RouterButton to="/home">Continue</RouterButton>
         </FormWrap>
         </Container>
       )}
