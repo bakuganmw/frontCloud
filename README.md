@@ -1,3 +1,5 @@
+# View on the Project
+You can check it out in the folder preview without running the code
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
